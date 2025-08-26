@@ -1,11 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>day 1</title>
+    <title>Day 1: Stack Avatar Challenge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: radial-gradient(circle at top left, #1e293b, #0f172a);
+            color: #fff;
+        }
+
+        header {
+            width: 100%;
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin: 0 0 10px;
+            animation: fadeInDown 1s ease forwards;
+        }
+
+        .day-btn {
+            padding: 10px 25px;
+            background: #0ea5e9;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .day-btn:hover {
+            background: #38bdf8;
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(14, 165, 233, 0.8);
+        }
+
+        .avatar-stack {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 120px;
+            width: 100%;
+            max-width: 900px;
+            margin-top: 50px;
+        }
+
+        .avatar,
+        .avatar-more {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s ease, left 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column-reverse;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            display: block;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .avatar span {
+            position: absolute;
+            top: -25px;
+            font-size: 0.75rem;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 2px 6px;
+            border-radius: 6px;
+            opacity: 0;
+            color: #fff;
+            white-space: nowrap;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .avatar:hover span {
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+
+        .avatar:hover img {
+            transform: translateY(-10px) scale(1.1) rotate(5deg);
+            box-shadow: 0 10px 25px rgba(0, 255, 200, 0.5);
+        }
+
+        .avatar.clicked img {
+            transform: translateY(-25px) scale(1.2);
+            box-shadow: 0 15px 30px rgba(0, 255, 150, 0.7);
+        }
+
+        .avatar-more {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e2e8f0;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
+
 <body>
-    
+
+    <header>
+        <h1>Day 1: Stack Avatar Challenge</h1>
+        <button class="day-btn">Day 1</button>
+    </header>
+
+    <div id="avatar-stack" class="avatar-stack"></div>
+
+    <script>
+        (function () {
+            const avatarsData = [
+                { name: "Kelly", src: "./images/girl1.jpg" },
+                { name: "Alex", src: "./images/boy1.jpg" },
+                { name: "Sam", src: "./images/girl2.jpg" },
+                { name: "Deb", src: "./images/boy2.jpg" },
+                { name: "Mia", src: "./images/girl3.jpg" },
+                { name: "Leo", src: "./images/boy3.jpg" },
+                { name: "Anna", src: "./images/girl4.jpg" },
+                { name: "Max", src: "./images/boy4.jpg" },
+                { name: "Lily", src: "./images/girl5.jpg" },
+                { name: "Jake", src: "./images/boy5.jpg" },
+            ];
+
+            const container = document.getElementById("avatar-stack");
+            let expanded = false;
+
+            const avatars = avatarsData.map((avatar) => {
+                const div = document.createElement("div");
+                div.classList.add("avatar");
+
+                const img = document.createElement("img");
+                img.src = avatar.src;
+                img.alt = avatar.name;
+                img.onerror = () => { img.src = `https://ui-avatars.com/api/?name=${avatar.name}`; };
+                div.appendChild(img);
+
+                const nameSpan = document.createElement("span");
+                nameSpan.textContent = avatar.name;
+                div.appendChild(nameSpan);
+
+                div.addEventListener("click", () => {
+                    avatars.forEach(a => a.classList.remove("clicked"));
+                    div.classList.add("clicked");
+                });
+
+                container.appendChild(div);
+                return div;
+            });
+
+            const more = document.createElement("div");
+            more.classList.add("avatar", "avatar-more");
+            more.textContent = "...";
+            more.addEventListener("click", () => {
+                expanded = !expanded;
+                updatePositions();
+            });
+            container.appendChild(more);
+
+            function updatePositions() {
+                const total = avatars.length;
+                const spacing = expanded ? 80 : 45;
+
+                avatars.forEach((div, idx) => {
+                    const offset = (-(total - 1) / 2 + idx) * spacing;
+                    div.style.left = `calc(50% + ${offset}px - 35px)`;
+                });
+
+                const offsetMore = (-(total - 1) / 2 + total) * spacing + 5;
+                more.style.left = `calc(50% + ${offsetMore}px - 35px)`;
+            }
+
+            updatePositions();
+        })();
+    </script>
+
 </body>
+
 </html>
