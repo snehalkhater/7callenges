@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interactive Folder</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #f0f4ff, #d9e4ff);
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.5em;
+      color: #333366;
+    }
+
+    h2 {
+      margin-top: 10px;
+      margin-bottom: 60px;
+      font-size: 1.2em;
+      color: #555;
+      font-weight: normal;
+      letter-spacing: 1px;
+    }
+
+    .folder {
+      position: relative;
+      width: 200px;
+      height: 140px;
+      perspective: 800px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .folder:hover {
+      transform: rotateY(5deg) rotateX(3deg) scale(1.02);
+    }
+
+    .folder-body {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, #f9d976, #f39f86);
+      border: 2px solid #d17a42;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .folder-lid {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: linear-gradient(to bottom, #ffd27f, #e39f4f);
+      border: 2px solid #d17a42;
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+      transform-origin: bottom;
+      transform: rotateX(0deg);
+      transition: transform 0.6s ease;
+      z-index: 2;
+    }
+
+    .folder.open .folder-lid {
+      transform: rotateX(-70deg);
+    }
+
+    .papers {
+      position: absolute;
+      top: 20px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: all 0.5s ease;
+      z-index: 1;
+    }
+
+    .papers div {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      height: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding-left: 6px;
+      font-size: 12px;
+      line-height: 20px;
+    }
+
+    .folder.open .papers {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .label {
+      position: absolute;
+      bottom: 5px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-weight: bold;
+      color: #6b370c;
+      text-shadow: 0 1px #fff6d4;
+    }
+  </style>
+</head>
+<body>
+  <h1>Day-4</h1>
+  <h2>Interactive Folder Designs</h2>
+
+  <div class="folder" onclick="this.classList.toggle('open')">
+    <div class="folder-lid"></div>
+    <div class="folder-body">
+      <div class="papers">
+        <div>📄 Report.pdf</div>
+        <div>📄 Notes.txt</div>
+        <div>📄 Design.sketch</div>
+        <div>📄 Budget.xlsx</div>
+        <div>📄 Meeting.docx</div>
+      </div>
+      <div class="label">Project Folder</div>
+    </div>
+  </div>
+</body>
+</html>
