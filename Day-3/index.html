@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Cards - Glass Design</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #e0eafc, #cfdef3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Gradient Animated Heading */
+    h1 {
+      font-size: 42px;
+      font-weight: 700;
+      text-align: center;
+      margin: 20px 0 40px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #ff758c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientMove 4s infinite alternate;
+      letter-spacing: 2px;
+    }
+
+    @keyframes gradientMove {
+      from { background-position: 0% 50%; }
+      to { background-position: 100% 50%; }
+    }
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      width: 90%;
+      max-width: 1000px;
+    }
+
+    .card {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+    }
+
+    .card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card .place-name {
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      padding: 8px 15px;
+      border-radius: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #222;
+    }
+
+    /* Modal Style */
+    .expanded {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .expanded .modal {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      max-width: 800px;
+      width: 90%;
+      overflow: hidden;
+      animation: slideUp 0.4s ease forwards;
+    }
+
+    .modal img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+    }
+
+    .modal-content {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .modal h2 {
+      margin: 10px 0;
+      font-size: 26px;
+      color: #222;
+    }
+
+    .modal p {
+      font-size: 16px;
+      color: #444;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .buttons button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      transition: transform 0.2s ease;
+    }
+
+    .buttons button:hover {
+      transform: scale(1.1);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      font-size: 30px;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .close-btn:hover {
+      color: #ff5252;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  
+  <h1>Travel the World</h1>
+
+  <div class="card-container">
+    <!-- Card 1 -->
+    <div class="card" onclick="expandCard('paris')">
+      <img src="./images/cityscape-paris-sunlight-blue-sky-fra.jpg" alt="Paris">
+      <div class="place-name">Paris</div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="card" onclick="expandCard('tokyo')">
+      <img src="./images/building-tower-landmark-dusk-skyline.jpg" alt="Tokyo">
+      <div class="place-name">Tokyo</div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="card" onclick="expandCard('newyork')">
+      <img src="./images/manhattan-skyline.jpg" alt="New York">
+      <div class="place-name">New York</div>
+    </div>
+  </div>
+
+  <!-- Expanded Paris -->
+  <div id="paris" class="expanded">
+    <span class="close-btn" onclick="closeCard('paris')">&times;</span>
+    <div class="modal">
+      <img src="./images/cityscape-paris-sunlight-blue-sky-fra.jpg" alt="Paris">
+      <div class="modal-content">
+        <h2>Paris</h2>
+        <p>Paris, the capital of France, is known for its stunning architecture, culture, and romantic atmosphere. Famous spots include the Eiffel Tower, Louvre Museum, and Notre-Dame Cathedral.</p>
+        <div class="buttons">
+          <button>Book now</button>
+          <button>Hotel</button>
+          <button>Food</button>
+          <button>Famous Points</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Expanded Tokyo -->
+  <div id="tokyo" class="expanded">
+    <span class="close-btn" onclick="closeCard('tokyo')">&times;</span>
+    <div class="modal">
+      <img src="./images/building-tower-landmark-dusk-skyline.jpg" alt="Tokyo">
+      <div class="modal-content">
+        <h2>Tokyo</h2>
+        <p>Tokyo, the capital of Japan, blends ultramodern skyscrapers with traditional temples. Explore Shibuya Crossing, Tokyo Tower, and authentic Japanese cuisine.</p>
+        <div class="buttons">
+          <button>Book now</button>
+          <button>Hotel</button>
+          <button>Food</button>
+          <button>Famous Points</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Expanded New York -->
+  <div id="newyork" class="expanded">
+    <span class="close-btn" onclick="closeCard('newyork')">&times;</span>
+    <div class="modal">
+      <img src="./images/manhattan-skyline.jpg" alt="New York">
+      <div class="modal-content">
+        <h2>New York</h2>
+        <p>New York City is famous for its skyline, Times Square, Central Park, and Broadway shows. Known as "The City That Never Sleeps".</p>
+        <div class="buttons">
+          <button>Book now</button>
+          <button>Hotel</button>
+          <button>Food</button>
+          <button>Famous Points</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function expandCard(id) {
+      document.getElementById(id).style.display = "flex";
+    }
+
+    function closeCard(id) {
+      document.getElementById(id).style.display = "none";
+    }
+  </script>
+
+</body>
+</html>
