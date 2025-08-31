@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Progressive Input Stack - Day 5</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #001a1d, #0a1f33);
+            color: #e0f7f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 380px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        h1 {
+            color: #00e5ff;
+            font-size: 2rem;
+            text-align: center;
+            text-shadow: 0 0 12px rgba(0, 229, 255, 0.8);
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #444;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        .dot.active {
+            background: #00e676;
+            box-shadow: 0 0 10px rgba(0, 230, 118, 0.7);
+        }
+
+        .cards-wrapper {
+            position: relative;
+            width: 100%;
+            min-height: 260px;
+        }
+
+        .card {
+            position: absolute;
+            width: 100%;
+            padding: 22px;
+            border-radius: 14px;
+            background: #13232f;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+            transform-origin: center;
+            transition: transform 0.7s ease, opacity 0.7s ease;
+        }
+
+        .card.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: rotateY(90deg) scale(0.95);
+        }
+
+        .card.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: rotateY(0deg) scale(1);
+        }
+
+        input {
+            width: 95%;
+            padding: 12px;
+            margin-top: 12px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: #0d1a24;
+            color: #e0f7f4;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus {
+            border-color: #00e5ff;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+        }
+        
+
+        button {
+            margin-top: 15px;
+            padding: 12px 22px;
+            background: #00e676;
+            color: #0d1a24;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover {
+            background: #00c853;
+            box-shadow: 0 0 12px rgba(0, 230, 118, 0.6);
+        }
+
+        button:disabled {
+            background: #444;
+            cursor: not-allowed;
+            color: #888;
+        }
+
+        #confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        /* Result styling */
+        .result {
+            background: #13232f;
+            padding: 22px;
+            border-radius: 14px;
+            width: 380px;
+            text-align: left;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .result.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .result h2 {
+            color: #00e5ff;
+            margin-top: 0px;
+            text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+        }
+
+        .result p {
+            margin: 6px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Same HTML structure -->
+    <div class="container" id="form-container">
+        <h1>Progressive Input Stack - Day 5</h1>
+        <div class="step-indicator" id="step-indicator"></div>
+
+        <div class="cards-wrapper">
+            <div class="card active">
+                <h2>1. What’s your full name?</h2>
+                <input type="text" id="name" placeholder="Enter your name" required autocomplete="off" spellcheck="false"/>
+                <button id="nextBtn">Next</button>
+            </div>
+            <div class="card hidden">
+                <h2>2. What’s your email?</h2>
+                <input type="email" id="email" placeholder="Enter your email" required autocomplete="off" spellcheck="false"/>
+                <button id="nextBtn">Next</button>
+            </div>
+            <div class="card hidden">
+                <h2>3. Create a password</h2>
+                <input type="password" id="password" placeholder="Enter password" required autocomplete="off" spellcheck="false"/>
+                <button id="nextBtn">Next</button>
+            </div>
+            <div class="card hidden">
+                <h2>4. Your Age</h2>
+                <input type="number" id="age" placeholder="Enter your age" required autocomplete="off" spellcheck="false"/>
+                <button id="nextBtn">Next</button>
+            </div>
+            <div class="card hidden">
+                <h2>5. Your Address</h2>
+                <input type="text" id="address" placeholder="Enter your address" required autocomplete="off" spellcheck="false"/>
+                <button id="submitBtn">Finish</button>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="confetti"></canvas>
+
+    <div class="result" id="result">
+        <h2>Submitted Information:</h2>
+        <p><strong>Name:</strong> <span id="res-name"></span></p>
+        <p><strong>Email:</strong> <span id="res-email"></span></p>
+        <p><strong>Password:</strong> <span id="res-password"></span></p>
+        <p><strong>Age:</strong> <span id="res-age"></span></p>
+        <p><strong>Address:</strong> <span id="res-address"></span></p>
+    </div>
+
+    <script>
+        const cards = document.querySelectorAll('.card');
+        const dotsContainer = document.getElementById('step-indicator');
+        const resultDiv = document.getElementById('result');
+        const confettiCanvas = document.getElementById('confetti');
+        let current = 0;
+
+        // Create step dots
+        for (let i = 0; i < cards.length; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if (i === 0) dot.classList.add('active');
+            dotsContainer.appendChild(dot);
+        }
+        const dots = document.querySelectorAll('.dot');
+
+        function showCard(index) {
+            cards.forEach((card, i) => {
+                card.classList.toggle('active', i === index);
+                card.classList.toggle('hidden', i !== index);
+                dots[i].classList.toggle('active', i === index);
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'nextBtn') {
+                if (current < cards.length - 1) {
+                    current++;
+                    showCard(current);
+                }
+            }
+            if (e.target.id === 'submitBtn') {
+                document.querySelector('.cards-wrapper').style.display = 'none';
+                dotsContainer.style.display = 'none';
+                document.querySelector('h1').style.display = 'none';
+
+                document.getElementById('res-name').textContent = document.getElementById('name').value;
+                document.getElementById('res-email').textContent = document.getElementById('email').value;
+                document.getElementById('res-password').textContent = document.getElementById('password').value;
+                document.getElementById('res-age').textContent = document.getElementById('age').value;
+                document.getElementById('res-address').textContent = document.getElementById('address').value;
+
+                resultDiv.classList.add('show');
+                launchConfetti();
+            }
+        });
+
+        const ctx = confettiCanvas.getContext('2d');
+        let confettiPieces = [];
+        function launchConfetti() {
+            confettiPieces = [];
+            for (let i = 0; i < 200; i++) {
+                confettiPieces.push({
+                    x: Math.random() * window.innerWidth,
+                    y: Math.random() * window.innerHeight - window.innerHeight,
+                    w: 8,
+                    h: 16,
+                    color: `hsl(${Math.random() * 360},100%,50%)`,
+                    speed: Math.random() * 5 + 2
+                });
+            }
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            confettiPieces.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, p.w, p.h);
+                p.y += p.speed;
+                if (p.y > window.innerHeight) p.y = -20;
+            });
+            requestAnimationFrame(animateConfetti);
+        }
+
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+
+    </script>
+</body>
+
+</html>
