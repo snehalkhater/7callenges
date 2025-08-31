@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warp Overlay - Sarzameen Movie</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #2a0a4d; /* Deep Indigo */
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Page Heading */
+    .main-heading {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #f5e6ff;
+      text-align: center;
+      animation: fadeSlideDown 1.2s ease forwards;
+    }
+
+    @keyframes fadeSlideDown {
+      from { opacity: 0; transform: translateY(-30px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+
+    /* Movie Card */
+    .card {
+      background: linear-gradient(135deg, #4b0082, #8e44ad); /* Indigo → Violet */
+      color: #fff;
+      border-radius: 20px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      padding: 25px;
+      width: 340px;
+      text-align: center;
+      z-index: 2;
+      position: relative;
+      transition: transform 0.4s ease;
+      animation: popUp 1s ease forwards;
+    }
+
+    @keyframes popUp {
+      from {transform: scale(0.8); opacity: 0;}
+      to {transform: scale(1); opacity: 1;}
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+    }
+
+    .card img {
+      width: 100px;
+      margin-bottom: 15px;
+      filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.5));
+    }
+
+    .card h1 {
+      margin: 0;
+      font-size: 18px;
+      color: #ffe6ff;
+      letter-spacing: 1px;
+      animation: glowText 2s infinite alternate;
+    }
+
+    @keyframes glowText {
+      from { text-shadow: 0 0 8px #ff66cc; }
+      to { text-shadow: 0 0 20px #ff99ff, 0 0 30px #cc33ff; }
+    }
+
+    .card h2 {
+      margin: 10px 0;
+      font-size: 24px;
+      letter-spacing: 1px;
+    }
+
+    .card .info {
+      font-size: 14px;
+      color: #f1e6ff;
+      margin-top: 10px;
+    }
+
+    .btn {
+      margin-top: 20px;
+      padding: 12px 25px;
+      background: #ff66cc;
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn:hover {
+      background: #e055b3;
+      transform: scale(1.05);
+    }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, #ff66cc, #3498db); /* Magenta → Electric Blue */
+      clip-path: circle(0% at 50% 90%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      transition: clip-path 1s ease-in-out;
+      z-index: 5;
+      color: #fff;
+      text-align: center;
+    }
+
+    .overlay.active {
+      clip-path: circle(150% at 50% 90%);
+    }
+
+    .overlay img {
+      width: 180px;
+      animation: popIn 1.5s ease forwards;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .overlay h1 {
+      font-size: 2.5rem;
+      margin: 15px 0 10px;
+      animation: fadeIn 2s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+
+    .ticket {
+      background: #fff;
+      color: #000;
+      padding: 20px;
+      border-radius: 15px;
+      width: 340px;
+      margin-top: 20px;
+      text-align: left;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: translateY(40px);
+      animation: slideUp 1.5s ease forwards 0.5s;
+    }
+
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .download-btn {
+      margin-top: 25px;
+      padding: 14px 35px;
+      background: #00f5d4;
+      color: #000;
+      font-size: 18px;
+      border: none;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+      transition: transform 0.3s;
+    }
+
+    .download-btn:hover {
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Heading -->
+  <div class="main-heading">🎬 Book Your Movie Ticket</div>
+
+  <!-- Movie Card -->
+  <div class="card">
+    <img src="movie.jpg" alt="Movie Icon">
+    <h1>Now Showing</h1>
+    <h2>Sarzameen</h2>
+    <p class="info">Tonight · 8:45 PM</p>
+    <button class="btn" onclick="showOverlay()">Get Ticket</button>
+  </div>
+
+  <!-- Warp Overlay -->
+  <div class="overlay" id="overlay">
+    <img src="ticket.jpg" alt="Cinema">
+    <h1>Your Ticket is Ready!</h1>
+    <div class="ticket">
+      <h3>🎬 Movie Ticket</h3>
+      <p><b>Movie:</b> Sarzameen</p>
+      <p><b>Date:</b> Aug 30, 2025</p>
+      <p><b>Showtime:</b> 8:45 PM</p>
+      <p><b>Seat:</b> B16</p>
+      <p><b>Hall:</b> Screen 5</p>
+    </div>
+    <button class="download-btn">Download Ticket</button>
+  </div>
+
+  <script>
+    function showOverlay() {
+      document.getElementById("overlay").classList.add("active");
+    }
+  </script>
+
+</body>
+</html>
